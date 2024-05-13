@@ -1,0 +1,11 @@
+{
+  "name": "cypress",
+  "version": "1.0.0",
+  "description": "Cypress Automation Testing Practice",
+  "main": "index.js",
+  "author": "Leonardo Badell",
+  "license": "MIT",
+  "dependencies": {
+    "cypress": "^13.9.0"
+  }
+}
