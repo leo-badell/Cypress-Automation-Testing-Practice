@@ -31,4 +31,24 @@ beforeEach(() => {
     cy.getByClass('btn-outline-danger').click()
    
   })
+
+  it('Should Add and remove Elements', () => {
+
+    cy.intercept({method:'GET', path: 'add-remove-elements'})
+    cy.getBaseUrl('/add-remove-elements')
+
+    cy.getByClass('card-title').eq(1)
+    .should('be.visible')
+    .and('contain', 'Add/Remove Elements')
+    .click()
+
+    Cypress._.times(8, () => {
+      cy.contains('button', 'Add Element').click()
+  })
+
+    Cypress._.times(8, () => {
+      cy.getByClass('added-manually').first().click()
+  })
+ 
+  })
 })
