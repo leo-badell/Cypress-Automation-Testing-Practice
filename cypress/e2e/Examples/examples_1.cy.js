@@ -51,4 +51,45 @@ beforeEach(() => {
   })
  
   })
+
+  it('Should manipulate the notification message', () => {
+
+    cy.intercept({method:'GET', path: 'notification-message-rendered'})
+    cy.getBaseUrl('/notification-message-rendered')
+
+    cy.getByClass('card-title').eq(2)
+    .should('be.visible')
+    .and('contain', 'Notification Message')
+    .click()
+
+    cy.contains('a', 'Click here').click()
+    cy.get('.alert', { timeout: 10000 }).then(($alert) => {
+      if ($alert.hasClass('alert-success')) {
+        expect($alert.text().trim()).to.equal('Action successful')
+        cy.log('Successful message!')
+      } else if ($alert.hasClass('alert-info')) {
+        expect($alert.text().trim()).to.equal('Action unsuccessful, please try again')
+        cy.log('Unsuccessful message!')
+      }
+    })
+  })
+
+  it.skip('Should interact with Dynamic Table', () => {
+
+    cy.fixture('response.json').then((responseData) => {
+      cy.intercept({
+        method: 'GET',
+        url: 'https://practice.expandtesting.com/socket.io/?EIO=4&transport=polling&t=Oz-qtsM',
+      }, responseData).as('apiCheck')
+    })
+    
+    cy.getBaseUrl('/dynamic-table')
+    
+    // cy.wait('@apiCheck')
+    
+    // .then((interception) => {
+    //   // Make assertions about the request and response
+    // })
+    
+  })
 })
