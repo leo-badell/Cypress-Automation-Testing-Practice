@@ -1,3 +1,5 @@
+import spok from 'cy-spok'
+
 describe('First spec', () => {
 
 beforeEach(() => {
@@ -74,22 +76,25 @@ beforeEach(() => {
     })
   })
 
-  it.skip('Should interact with Dynamic Table', () => {
+  it('Should interact with Dynamic Table', () => {
 
-    cy.fixture('response.json').then((responseData) => {
-      cy.intercept({
-        method: 'GET',
-        url: 'https://practice.expandtesting.com/socket.io/?EIO=4&transport=polling&t=Oz-qtsM',
-      }, responseData).as('apiCheck')
-    })
-    
+    cy.intercept({method:'GET', path: 'dynamic-table'}).as('getDynamicTable')
     cy.getBaseUrl('/dynamic-table')
+
+    cy.getByClass('card-title').eq(3)
+    .should('be.visible')
+    .and('contain', 'Dynamic Table')
+    .click()
     
-    // cy.wait('@apiCheck')
+    cy.intercept({ method: 'GET', path: 'socket.io/*' }).as('getPlayground');
     
-    // .then((interception) => {
-    //   // Make assertions about the request and response
-    // })
-    
+    cy.getByClass('row').find('#table-description')
+    .should('contain', 'Task Manager')
+
+    cy.get('thead tr').each( dynamicTable => {
+      cy.wrap(dynamicTable).should(spok({
+        x: spok.notDefined
+      }))
+    })
   })
 })
