@@ -95,6 +95,42 @@ beforeEach(() => {
       cy.wrap(dynamicTable).should(spok({
         x: spok.notDefined
       }))
+
+      cy.get('tbody tr').each( tableRow => {
+        cy.wrap(tableRow).should(spok({
+          x: spok.notDefined
+        }))
+
+      const browsers = ['Chrome', 'Firefox', 'System', 'Internet Explorer'];
+
+      browsers.forEach((browser) => {
+        cy.contains('tbody tr', browser).within(() => {
+          cy.get('td').eq(0).should(spok({
+            browser: spok.notDefined
+          }));
+            
+          })
+        })
+      })
+    })
+  })
+
+  it('Should inspect Browser Information', () => {
+
+
+    cy.intercept({method:'GET', path: 'my-browser'})
+    cy.getBaseUrl('/my-browser')
+
+    cy.getByClass('card-title').eq(4)
+    .should('be.visible')
+    .and('contain', 'My Browser Information')
+    .click()
+
+    cy.get('#browser-toggle').should('contain', 'Show Browser Information').click()
+
+    cy.getByClass('row').first().find('td').then( tableColumns => {
+      cy.wrap(tableColumns).eq(0).should('contain', 'User Agent')
+      cy.wrap(tableColumns).eq(1).should('contain', 'CodeName')
     })
   })
 })
