@@ -128,9 +128,33 @@ beforeEach(() => {
 
     cy.get('#browser-toggle').should('contain', 'Show Browser Information').click()
 
-    cy.getByClass('row').first().find('td').then( tableColumns => {
-      cy.wrap(tableColumns).eq(0).should('contain', 'User Agent')
-      cy.wrap(tableColumns).eq(1).should('contain', 'CodeName')
+    cy.get('tbody tr').find('td').then( tableColumns => {
+      cy.wrap(tableColumns).get('#browser-user-agent').should('contain', 'Mozilla/5.0');
+      cy.wrap(tableColumns).get('#browser-code-name').should('contain', 'Mozilla');
+      cy.wrap(tableColumns).get('#browser-name').should('contain', 'Google Chrome');
+      cy.wrap(tableColumns).get('#browser-version').should('contain', 'Windows NT');
+      cy.wrap(tableColumns).get('#browser-cookie').should('contain', 'true');
+      cy.wrap(tableColumns).get('#browser-platform').should('contain', 'Win32');
+    })
+    })
+
+    it('Should check Radio Buttons', () => {
+
+
+      cy.intercept({method:'GET', path: 'radio-buttons'})
+      cy.getBaseUrl('/radio-buttons')
+  
+      cy.getByClass('card-title').eq(5)
+      .should('be.visible')
+      .and('contain', 'Radio Buttons')
+      .click()
+
+      cy.getByClass('card-body').find('[type="radio"]').then( radioButtons => {
+        cy.wrap(radioButtons).eq(0).check().should('be.checked')
+      
+      })
     })
   })
-})
+
+
+
