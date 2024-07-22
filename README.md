@@ -1,5 +1,5 @@
-**Descrição do Projeto**
-Este projeto foi desenvolvido para demonstrar as melhores práticas de automação de testes utilizando Cypress. Ele abrange a automação de ações na aplicação web e testes de API, aproveitando uma série de plugins para aprimorar as funcionalidades do Cypress, como cy.spok, cypress-real-events, e cypress-drag-and-drop.
+**Descrição do Projeto:**
+Este projeto foi desenvolvido para demonstrar as melhores práticas de automação de testes utilizando Cypress no site https://practice.expandtesting.com/. Ele abrange a automação de ações na aplicação web e testes de API, aproveitando uma série de plugins para aprimorar as funcionalidades do Cypress, como cy.spok, cypress-real-events, e cypress-drag-and-drop.
 
 **Funcionalidades e Exemplos de Testes**
 
