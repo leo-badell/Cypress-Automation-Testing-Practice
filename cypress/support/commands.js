@@ -24,6 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import '@4tw/cypress-drag-drop'
+
 Cypress.Commands.add('getBaseUrl', () => {
     cy.visit(Cypress.env('baseUrl'))
 })

@@ -10,6 +10,7 @@
     "inherits": "^2.0.4"
   },
   "devDependencies": {
+    "@4tw/cypress-drag-drop": "^2.2.5",
     "cy-spok": "^1.6.2",
     "cypress-plugin-api": "^2.11.1"
   }
