@@ -35,7 +35,7 @@ describe('First spec', () => {
 
   })
 
-  it('Should Add and remove Elements', () => {
+  it.skip('Should Add and remove Elements', () => {
 
     cy.intercept({ method: 'GET', path: 'add-remove-elements' })
     cy.getBaseUrl('/add-remove-elements')

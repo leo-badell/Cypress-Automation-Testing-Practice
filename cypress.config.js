@@ -1,12 +1,23 @@
 const { defineConfig } = require("cypress");
 
-module.exports = defineConfig({
-  env: {
-    baseUrl: 'https://practice.expandtesting.com/'
-  },
+module.exports = {
   e2e: {
+    baseUrl: 'https://practice.expandtesting.com',
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      // Intercept ad requests globally
+      on('before:browser:launch', (browser = {}, launchOptions) => {
+        launchOptions.args.push('--disable-features=PreloadMediaEngagementData,AutoplayIgnoreWebAudio,PreloadMediaEngagementData2');
+        return launchOptions;
+      });
+      
+      on('task', {
+        log(message) {
+          console.log(message);
+          return null;
+        },
+      });
     },
-  },
-});
+    supportFile: 'cypress/support/commands.js',
+  }
+};
+
