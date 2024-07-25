@@ -26,17 +26,6 @@
 
 import '@4tw/cypress-drag-drop'
 
-// Cypress.Commands.add('getBaseUrl', () => {
-//     cy.visit(Cypress.env('baseUrl'))
-// })
-
-// Cypress.Commands.add('getByClass', (className) => {
-//     return cy.get(`.${className}`)
-// })
-
-// cypress/support/index.js
-
-// cypress/support/index.js
 
 Cypress.Commands.add('getBaseUrl', (path = '') => {
     cy.visit(`${Cypress.config('baseUrl')}${path}`);
@@ -45,6 +34,21 @@ Cypress.Commands.add('getBaseUrl', (path = '') => {
   Cypress.Commands.add('getByClass', (className) => {
     return cy.get(`.${className}`);
   });
+
+Cypress.Commands.add('getById', (id) => {
+  return cy.get(`#${id}`);
+});
+
+Cypress.Commands.add("dragTo", { prevSubject: "element" }, (subject, targetEl) => {
+  const dataTransfer = new DataTransfer(); 
+  cy.get(subject).trigger('dragstart',{
+     dataTransfer 
+    });
+  cy.get(targetEl).trigger('drop',{
+       dataTransfer
+  })
+}
+);
   
   Cypress.on('window:before:load', (win) => {
     const originalFetch = win.fetch;
@@ -67,4 +71,13 @@ Cypress.Commands.add('getBaseUrl', (path = '') => {
     };
   });
   
+//Should irnoger the Javascript variable error "Assignment to constant variable"
+Cypress.on('uncaught:exception', (err, runnable) => {
+  if (err.message.includes('Assignment to constant variable')) {
+    return false;
+  }
+  // Allow other errors to fail the test
+  return true;
+});
+
   

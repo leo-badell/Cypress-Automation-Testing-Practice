@@ -1,275 +1,242 @@
-import spok from 'cy-spok'
-
+import spok from 'cy-spok';
 
 describe('First spec', () => {
-
   beforeEach(() => {
+    const adUrls = [
+      { url: '**/ads/**', alias: 'blockAds' },
+      { url: '**/doubleclick.net/**', alias: 'blockDoubleclick' },
+      { url: '**/googlesyndication.com/**', alias: 'blockGoogleAds' },
+      { url: '**/adservice.google.com/**', alias: 'blockGoogleAdservice' },
+      { url: '**/ad.doubleclick.net/**', alias: 'blockAdDoubleclick' },
+      { url: '**/securepubads.g.doubleclick.net/**', alias: 'blockSecurepubads' },
+      { url: '**/pagead2.googlesyndication.com/**', alias: 'blockPagead2' },
+    ];
 
-    cy.intercept({ method: 'GET', path: 'inputs' })
-    cy.getBaseUrl('/')
+    adUrls.forEach(({ url, alias }) => {
+      cy.intercept('GET', url, { statusCode: 204, body: {} }).as(alias);
+    });
+  });
 
-  })
+  context('Sample applications for practice test automation part I', () => {
+    it('Should manipulate web inputs', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(0)
+        .should('be.visible')
+        .and('contain', 'Web inputs')
+        .click();
 
-  it('Should manipulate web inputs', () => {
+      cy.get('#input-number').type('951');
+      cy.get('#input-text').type('Another test');
+      cy.get('#input-password').type('Cypress/e2e');
 
-    cy.getByClass('card-title').eq(0)
-      .should('be.visible')
-      .and('contain', 'Web inputs')
-      .click()
+      let date = new Date();
+      date.setDate(date.getDate() + 400);
+      const futureYear = date.getFullYear();
+      const futureMonth = ("0" + (date.getMonth() + 1)).slice(-2);
+      const futureDay = ("0" + date.getDate()).slice(-2);
+      const dateToAssert = `${futureYear}-${futureMonth}-${futureDay}`;
 
-    cy.get('#input-number').type('951')
-    cy.get('#input-text').type('Another test')
-    cy.get('#input-password').type('Cypress/e2e')
+      cy.get('#input-date').type(dateToAssert);
+      cy.get('#btn-display-inputs').click();
+      cy.wait(500);
+      cy.getByClass('btn-outline-danger').click();
+    });
 
-    let date = new Date()
-    date.setDate(date.getDate() + 400)
-    let futureYear = date.getFullYear()
-    let futureMonth = ("0" + (date.getMonth() + 1)).slice(-2)
-    let futureDay = ("0" + date.getDate()).slice(-2);
-    let dateToAssert = `${futureYear}-${futureMonth}-${futureDay}`
+    it('Should log in using a dummy login form', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(1)
+        .should('be.visible')
+        .and('contain', 'Login Form')
+        .click();
 
-    cy.get('#input-date').type(dateToAssert)
-    cy.get('#btn-display-inputs').click()
-    cy.wait(1000)
-    cy.getByClass('btn-outline-danger').click()
+      cy.get('#username').type('practice');
+      cy.get('#password').type('SuperSecretPassword!');
+      cy.getByClass('btn-primary').should('contain', 'Login').click();
+      cy.getByClass('alert-success').should('contain', 'You logged into a secure area!');
+      cy.getByClass('btn-close', { timeout: 10000 }).click();
+    });
 
-  })
+    it('Should manipulate notification messages', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(2)
+        .should('be.visible')
+        .and('contain', 'Notification Message')
+        .click();
 
-  it.skip('Should Add and remove Elements', () => {
-
-    cy.intercept({ method: 'GET', path: 'add-remove-elements' })
-    cy.getBaseUrl('/add-remove-elements')
-
-    cy.getByClass('card-title').eq(1)
-      .should('be.visible')
-      .and('contain', 'Add/Remove Elements')
-      .click()
-
-    Cypress._.times(8, () => {
-      cy.contains('button', 'Add Element').click()
-    })
-
-    Cypress._.times(8, () => {
-      cy.getByClass('added-manually').first().click()
-    })
-
-  })
-
-  it('Should manipulate the notification message', () => {
-
-    cy.intercept({ method: 'GET', path: 'notification-message-rendered' })
-    cy.getBaseUrl('/notification-message-rendered')
-
-    cy.getByClass('card-title').eq(2)
-      .should('be.visible')
-      .and('contain', 'Notification Message')
-      .click()
-
-    cy.contains('a', 'Click here').click()
-    cy.get('.alert', { timeout: 10000 }).then(($alert) => {
-      if ($alert.hasClass('alert-success')) {
-        expect($alert.text().trim()).to.equal('Action successful')
-        cy.log('Successful message!')
-      } else if ($alert.hasClass('alert-info')) {
-        expect($alert.text().trim()).to.equal('Action unsuccessful, please try again')
-        cy.log('Unsuccessful message!')
-      }
-    })
-  })
-
-  it('Should interact with Dynamic Table', () => {
-
-    cy.intercept({ method: 'GET', path: 'dynamic-table' }).as('getDynamicTable')
-    cy.getBaseUrl('/dynamic-table')
-
-    cy.getByClass('card-title').eq(3)
-      .should('be.visible')
-      .and('contain', 'Dynamic Table')
-      .click()
-
-    cy.intercept({ method: 'GET', path: 'socket.io/*' }).as('getPlayground');
-
-    cy.getByClass('row').find('#table-description')
-      .should('contain', 'Task Manager')
-
-    cy.get('thead tr').each(dynamicTable => {
-      cy.wrap(dynamicTable).should(spok({
-        x: spok.notDefined
-      }))
-
-      cy.get('tbody tr').each(tableRow => {
-        cy.wrap(tableRow).should(spok({
-          x: spok.notDefined
-        }))
-
-        const browsers = ['Chrome', 'Firefox', 'System', 'Internet Explorer'];
-
-        browsers.forEach((browser) => {
-          cy.contains('tbody tr', browser).within(() => {
-            cy.get('td').eq(0).should(spok({
-              browser: spok.notDefined
-            }));
-
-          })
-        })
-      })
-    })
-  })
-
-  it('Should inspect Browser Information', () => {
-
-
-    cy.intercept({ method: 'GET', path: 'my-browser' })
-    cy.getBaseUrl('/my-browser')
-
-    cy.getByClass('card-title').eq(4)
-      .should('be.visible')
-      .and('contain', 'My Browser Information')
-      .click()
-
-    cy.get('#browser-toggle').should('contain', 'Show Browser Information').click()
-
-    cy.get('tbody tr').find('td').then(tableColumns => {
-      cy.wrap(tableColumns).get('#browser-user-agent').should('contain', 'Mozilla/5.0');
-      cy.wrap(tableColumns).get('#browser-code-name').should('contain', 'Mozilla');
-      cy.wrap(tableColumns).get('#browser-name').should('contain', 'Google Chrome');
-      cy.wrap(tableColumns).get('#browser-version').should('contain', 'Windows NT');
-      cy.wrap(tableColumns).get('#browser-cookie').should('contain', 'true');
-      cy.wrap(tableColumns).get('#browser-platform').should('contain', 'Win32');
-    })
-  })
-
-  it('Should check Radio Buttons', () => {
-
-
-    cy.intercept({ method: 'GET', path: 'radio-buttons' })
-    cy.getBaseUrl('/radio-buttons')
-
-    cy.getByClass('card-title').eq(5)
-      .should('be.visible')
-      .and('contain', 'Radio Buttons')
-      .click()
-
-    cy.contains('.card-custom', 'Select your favorite color:').find('[type="radio"]').then(colorButtons => {
-      cy.wrap(colorButtons).eq(0).check().should('be.checked')
-      cy.wrap(colorButtons).eq(1).check().should('be.checked')
-      cy.wrap(colorButtons).eq(2).check().should('be.checked')
-      cy.wrap(colorButtons).eq(3).check().should('be.checked')
-      cy.wrap(colorButtons).eq(4).should('be.disabled')
-    })
-
-    cy.contains('.card-custom', 'Select your favorite sport:').find('[type="radio"]').then(sportButtons => {
-      cy.wrap(sportButtons).eq(0).check().should('be.checked')
-      cy.wrap(sportButtons).eq(1).should('not.be.checked')
-      cy.wrap(sportButtons).eq(2).check().should('be.checked')
-
-    })
-  })
-
-  it.skip('Should drag and drop columns and swap headers', () => {
-    cy.intercept({ method: 'GET', path: 'drag-and-drop' });
-    cy.getBaseUrl('/drag-and-drop');
-
-    cy.getByClass('card-title').eq(6)
-      .should('be.visible')
-      .and('contain', 'Drag and Drop')
-      .click();
-
-    // Log initial state
-    cy.get('#dnd-columns').children().then(children => {
-      cy.log('Before drag-and-drop:');
-      children.each((index, child) => {
-        cy.log(`Child ${index}: ${child.id}`);
+      cy.contains('a', 'Click here').click();
+      cy.get('.alert', { timeout: 10000 }).then(($alert) => {
+        if ($alert.hasClass('alert-success')) {
+          expect($alert.text().trim()).to.equal('Action successful');
+          cy.log('Successful message!');
+        } else if ($alert.hasClass('alert-info')) {
+          expect($alert.text().trim()).to.equal('Action unsuccessful, please try again');
+          cy.log('Unsuccessful message!');
+        }
       });
     });
 
-    // Drag column B and drop it onto column A
-    cy.get('#column-b').drag('#column-a');
+    it('Should interact with a dynamic table', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(3)
+        .should('be.visible')
+        .and('contain', 'Dynamic Table')
+        .click();
 
-    // Wait for the changes to take effect
-    cy.wait(1000); // Adjust the wait time if necessary
+      cy.getByClass('row').find('#table-description')
+        .should('contain', 'Task Manager');
 
-    // Swap the ids and header text of the elements manually
-    cy.get('#column-a').invoke('attr', 'id', 'temp-column');
-    cy.get('#column-b').invoke('attr', 'id', 'column-a');
-    cy.get('#temp-column').invoke('attr', 'id', 'column-b');
+      cy.get('thead tr').each(dynamicTable => {
+        cy.wrap(dynamicTable).should(spok({ x: spok.notDefined }));
 
-    cy.get('#column-a header').invoke('text', 'B');
-    cy.get('#column-b header').invoke('text', 'A');
+        cy.get('tbody tr').each(tableRow => {
+          cy.wrap(tableRow).should(spok({ x: spok.notDefined }));
 
-    // Log final state
-    cy.get('#dnd-columns').children().then(children => {
-      cy.log('After drag-and-drop:');
-      children.each((index, child) => {
-        cy.log(`Child ${index}: ${child.id}`);
+          const browsers = ['Chrome', 'Firefox', 'System', 'Internet Explorer'];
+          browsers.forEach(browser => {
+            cy.contains('tbody tr', browser).within(() => {
+              cy.get('td').eq(0).should(spok({ browser: spok.notDefined }));
+            });
+          });
+        });
+      });
+    });
+  });
+
+  context('Sample applications for practice test automation part II', () => {
+    it('Should inspect browser information', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(4)
+        .should('be.visible')
+        .and('contain', 'My Browser Information')
+        .click();
+
+      cy.get('#browser-toggle').should('contain', 'Show Browser Information').click();
+      cy.get('tbody tr').find('td').then(tableColumns => {
+        cy.wrap(tableColumns).get('#browser-user-agent').should('contain', 'Mozilla/5.0');
+        cy.wrap(tableColumns).get('#browser-code-name').should('contain', 'Mozilla');
+        cy.wrap(tableColumns).get('#browser-name').should('contain', 'Google Chrome');
+        cy.wrap(tableColumns).get('#browser-version').should('contain', 'Windows NT');
+        cy.wrap(tableColumns).get('#browser-cookie').should('contain', 'true');
+        cy.wrap(tableColumns).get('#browser-platform').should('contain', 'Win32');
       });
     });
 
-    // Verify the new order of the columns based on their IDs and headers
-    cy.get('#dnd-columns').children().should('have.length', 2).then(children => {
-      cy.wrap(children[0], { timeout: 10000 }).should('have.id', 'column-a');
-      cy.wrap(children[0]).find('header').should('have.text', 'B');
-      cy.wrap(children[1], { timeout: 10000 }).should('have.id', 'column-b');
-      cy.wrap(children[1]).find('header').should('have.text', 'A');
+    it('Should check Radio Buttons', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(5)
+        .should('be.visible')
+        .and('contain', 'Radio Buttons')
+        .click();
+
+      cy.contains('.card-custom', 'Select your favorite color:')
+        .find('[type="radio"]').then(colorButtons => {
+          cy.wrap(colorButtons).eq(0).check().should('be.checked');
+          cy.wrap(colorButtons).eq(1).check().should('be.checked');
+          cy.wrap(colorButtons).eq(2).check().should('be.checked');
+          cy.wrap(colorButtons).eq(3).check().should('be.checked');
+          cy.wrap(colorButtons).eq(4).should('be.disabled');
+        });
+
+      cy.contains('.card-custom', 'Select your favorite sport:')
+        .find('[type="radio"]').then(sportButtons => {
+          cy.wrap(sportButtons).eq(0).check().should('be.checked');
+          cy.wrap(sportButtons).eq(1).should('not.be.checked');
+          cy.wrap(sportButtons).eq(2).check().should('be.checked');
+        });
     });
 
-    // Now drag column A to the position of column B
-    cy.get('#column-a').drag('#column-b');
+    it('Should drag and drop columns and swap headers', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(6)
+        .should('be.visible')
+        .and('contain', 'Drag and Drop')
+        .click();
 
-    // Wait for the changes to take effect
-    cy.wait(1000); // Adjust the wait time if necessary
+      cy.getById('column-a').dragTo('#column-b');
+      cy.wait(500);
+      cy.getById('column-b').dragTo('#column-a');
+    });
 
-    // Swap the ids and header text of the elements manually again
-    cy.get('#column-b').invoke('attr', 'id', 'temp-column');
-    cy.get('#column-a').invoke('attr', 'id', 'column-b');
-    cy.get('#temp-column').invoke('attr', 'id', 'column-a');
+    it('Should drag and drop circles into the target', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(7)
+        .should('be.visible')
+        .and('contain', 'Drag and Drop Circles')
+        .click();
 
-    cy.get('#column-a header').invoke('text', 'A');
-    cy.get('#column-b header').invoke('text', 'B');
+      cy.getByClass('red').as('redCircle');
+      cy.getByClass('green').as('greenCircle');
+      cy.getByClass('blue').as('blueCircle');
 
-    // Log final state again
-    cy.get('#dnd-columns').children().then(children => {
-      cy.log('After second drag-and-drop:');
-      children.each((index, child) => {
-        cy.log(`Child ${index}: ${child.id}`);
+      cy.get('@redCircle').dragTo('#target');
+      cy.get('@greenCircle').dragTo('#target');
+      cy.get('@blueCircle').dragTo('#target');
+    });
+  });
+
+  context('Sample applications for practice test automation part III', () => {
+    it('Should fill out form validation', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(8)
+        .should('be.visible')
+        .and('contain', 'Form Validation')
+        .click();
+
+      cy.get('#validationCustom01').should('be.visible').clear().type('John Connor');
+      cy.get('#validationCustom05').should('be.visible').type('212-3378954');
+
+      let date = new Date();
+      date.setDate(date.getDate() + 180);
+      const futureYear = date.getFullYear();
+      const futureMonth = ("0" + (date.getMonth() + 1)).slice(-2);
+      const futureDay = ("0" + date.getDate()).slice(-2);
+      const dateToAssert = `${futureYear}-${futureMonth}-${futureDay}`;
+
+      cy.get('input[name="pickupdate"]').type(dateToAssert);
+      cy.get('#validationCustom04').select('card').should('have.value', 'card');
+      cy.getByClass('btn-primary').click()
+        .get('.alert-info')
+        .should('contain', 'Thank you for validating your ticket');
+    });
+
+    it('Should upload files', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(9)
+        .should('be.visible')
+        .and('contain', 'File Upload')
+        .click();
+
+      cy.get('[type="file"]').selectFile('cypress/e2e/images/Postman.15.png', { force: true });
+      cy.getById('fileSubmit').should('be.visible').click();
+      cy.getByClass('breadcrumb-item').should('contain', 'File Uploaded!');
+    });
+
+    it('Should download a file', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(10)
+        .should('be.visible')
+        .and('contain', 'File Downloader')
+        .click();
+
+      cy.get('.d-flex.mb-2').first().click();
+    });
+
+    it('Should add and remove elements', () => {
+      cy.getBaseUrl('/');
+      cy.getByClass('card-title').eq(11)
+        .should('be.visible')
+        .and('contain', 'Add/Remove Elements')
+        .click();
+
+      Cypress._.times(6, () => {
+        cy.contains('button', 'Add Element').click();
+      });
+
+      Cypress._.times(6, () => {
+        cy.getByClass('added-manually').first().click();
       });
     });
-
-    // Verify the new order of the columns based on their IDs and headers again
-    cy.get('#dnd-columns').children().should('have.length', 2).then(children => {
-      cy.wrap(children[0], { timeout: 10000 }).should('have.id', 'column-a');
-      cy.wrap(children[0]).find('header').should('have.text', 'A');
-      cy.wrap(children[1], { timeout: 10000 }).should('have.id', 'column-b');
-      cy.wrap(children[1]).find('header').should('have.text', 'B');
-    });
+  });
 });
-
-it('Should drag and drop circles into the target', () => {
-
-  cy.intercept({ method: 'GET', path: 'drag-and-drop-circles' })
-  cy.getBaseUrl('/drag-and-drop-circles')
-
-  cy.getByClass('card-title').eq(7)
-    .should('be.visible')
-    .and('contain', 'Drag and Drop Circles')
-    .click()
-
-    cy.getByClass('red').as('redCircle')
-
-    cy.getByClass('green').as('greenCircle')
-
-    cy.getByClass('blue').as('blueCircle')
-
-    cy.get('@redCircle').drag('#target')
-
-    cy.get('@greenCircle').drag('#target')
-
-    cy.get('@blueCircle').drag('#target')
-})
-
-
-
-
-})
 
 
