@@ -26,6 +26,16 @@
 
 import '@4tw/cypress-drag-drop'
 
+import notesApi from './commandsFiles/notesApi'
+import practiceApi from './commandsFiles/practiceApi'
+
+export function commands () {
+  return {
+    notesApi,
+    practiceApi
+  }
+}
+
 
 Cypress.Commands.add('getBaseUrl', (path = '') => {
     cy.visit(`${Cypress.config('baseUrl')}${path}`);
