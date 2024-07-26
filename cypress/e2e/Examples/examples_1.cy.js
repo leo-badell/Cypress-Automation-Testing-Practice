@@ -25,9 +25,9 @@ describe('First spec', () => {
         .and('contain', 'Web inputs')
         .click();
 
-      cy.get('#input-number').type('951');
-      cy.get('#input-text').type('Another test');
-      cy.get('#input-password').type('Cypress/e2e');
+      cy.getById('input-number').type('951');
+      cy.getById('input-text').type('Another test');
+      cy.getById('input-password').type('Cypress/e2e');
 
       let date = new Date();
       date.setDate(date.getDate() + 400);
@@ -36,8 +36,8 @@ describe('First spec', () => {
       const futureDay = ("0" + date.getDate()).slice(-2);
       const dateToAssert = `${futureYear}-${futureMonth}-${futureDay}`;
 
-      cy.get('#input-date').type(dateToAssert);
-      cy.get('#btn-display-inputs').click();
+      cy.getById('input-date').type(dateToAssert);
+      cy.getById('btn-display-inputs').click();
       cy.wait(500);
       cy.getByClass('btn-outline-danger').click();
     });
@@ -49,8 +49,8 @@ describe('First spec', () => {
         .and('contain', 'Login Form')
         .click();
 
-      cy.get('#username').type('practice');
-      cy.get('#password').type('SuperSecretPassword!');
+      cy.getById('username').type('practice');
+      cy.getById('password').type('SuperSecretPassword!');
       cy.getByClass('btn-primary').should('contain', 'Login').click();
       cy.getByClass('alert-success').should('contain', 'You logged into a secure area!');
       cy.getByClass('btn-close', { timeout: 10000 }).click();
@@ -110,7 +110,7 @@ describe('First spec', () => {
         .and('contain', 'My Browser Information')
         .click();
 
-      cy.get('#browser-toggle').should('contain', 'Show Browser Information').click();
+      cy.getById('browser-toggle').should('contain', 'Show Browser Information').click();
       cy.get('tbody tr').find('td').then(tableColumns => {
         cy.wrap(tableColumns).get('#browser-user-agent').should('contain', 'Mozilla/5.0');
         cy.wrap(tableColumns).get('#browser-code-name').should('contain', 'Mozilla');
@@ -182,8 +182,8 @@ describe('First spec', () => {
         .and('contain', 'Form Validation')
         .click();
 
-      cy.get('#validationCustom01').should('be.visible').clear().type('John Connor');
-      cy.get('#validationCustom05').should('be.visible').type('212-3378954');
+      cy.getById('validationCustom01').should('be.visible').clear().type('John Connor');
+      cy.getById('validationCustom05').should('be.visible').type('212-3378954');
 
       let date = new Date();
       date.setDate(date.getDate() + 180);
@@ -193,7 +193,7 @@ describe('First spec', () => {
       const dateToAssert = `${futureYear}-${futureMonth}-${futureDay}`;
 
       cy.get('input[name="pickupdate"]').type(dateToAssert);
-      cy.get('#validationCustom04').select('card').should('have.value', 'card');
+      cy.getById('validationCustom04').select('card').should('have.value', 'card');
       cy.getByClass('btn-primary').click()
         .get('.alert-info')
         .should('contain', 'Thank you for validating your ticket');

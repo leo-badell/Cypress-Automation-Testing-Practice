@@ -8,3 +8,14 @@ Cypress.Commands.add('getHealthStatus', () => {
         return response
     })
 })
+
+//Get my public ip
+Cypress.Commands.add('getMyIp', () => {
+    cy.api({
+        method: 'GET',
+        url: `${Cypress.env('baseUrl')}/api/my-ip`,
+        failOnStatusCode: false
+    }).then(response => {
+        return response
+    })
+})

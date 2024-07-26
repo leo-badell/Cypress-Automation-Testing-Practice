@@ -417,7 +417,7 @@ csstype@^3.1.3:
 
 cy-spok@^1.6.2:
   version "1.6.2"
-  resolved "https://registry.npmjs.org/cy-spok/-/cy-spok-1.6.2.tgz"
+  resolved "https://registry.yarnpkg.com/cy-spok/-/cy-spok-1.6.2.tgz#3031eadea9001cdef4cbc06beac6e7ff6f08cada"
   integrity sha512-Es7RgNvyJdLKIvbpf72HdsXHqBn4l6LdTB5Jf/rv0A3olx6SSjxmPmOPDdP2DaO/HBg/rsGFzXJ+edlvLpQE8g==
   dependencies:
     "@bahmutov/spok" "1.2.6"

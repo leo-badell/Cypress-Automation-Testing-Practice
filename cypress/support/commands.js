@@ -24,22 +24,26 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+
+// Rest APIs imports
 import '@4tw/cypress-drag-drop'
+import 'cypress-plugin-api'
 
 import notesApi from './commandsFiles/notesApi'
 import practiceApi from './commandsFiles/practiceApi'
 
-export function commands () {
+export function commands(){
   return {
     notesApi,
     practiceApi
   }
 }
 
-
+// Custom commands
 Cypress.Commands.add('getBaseUrl', (path = '') => {
-    cy.visit(`${Cypress.config('baseUrl')}${path}`);
+    cy.visit(`${Cypress.env('baseUrl')}${path}`);
   });
+
   
   Cypress.Commands.add('getByClass', (className) => {
     return cy.get(`.${className}`);
@@ -80,8 +84,10 @@ Cypress.Commands.add("dragTo", { prevSubject: "element" }, (subject, targetEl) =
       return originalFetch.apply(this, args);
     };
   });
+
+
   
-//Should irnoger the Javascript variable error "Assignment to constant variable"
+//Should ignore Javascript variable error "Assignment to constant variable"
 Cypress.on('uncaught:exception', (err, runnable) => {
   if (err.message.includes('Assignment to constant variable')) {
     return false;
