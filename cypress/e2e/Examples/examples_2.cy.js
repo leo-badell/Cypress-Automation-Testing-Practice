@@ -24,6 +24,8 @@ describe('Second spec', () => {
         .should('be.visible')
         .and('contain', 'Forgot Password Form')
         .click();
+
+        cy.getById('email ')
         })
     })
 })

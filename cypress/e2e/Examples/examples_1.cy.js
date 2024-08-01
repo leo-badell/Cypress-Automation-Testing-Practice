@@ -46,7 +46,7 @@ describe('First spec', () => {
       cy.getBaseUrl('/');
       cy.getByClass('card-title').eq(1)
         .should('be.visible')
-        .and('contain', 'Login Form')
+        .and('contain', 'Login Test Page')
         .click();
 
       cy.getById('username').type('practice');
