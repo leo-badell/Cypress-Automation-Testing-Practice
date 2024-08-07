@@ -1,3 +1,4 @@
 /node_modules
 /.history
-/videos/
+cypress/screenshots/
+cypress/videos/
