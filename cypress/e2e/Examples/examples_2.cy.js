@@ -34,7 +34,7 @@ describe('Second spec', () => {
       cy.getByClass('btn-bg').should('contain', 'Retrieve password').click();
     });
 
-    it.only('Should make basic authentication', () => {
+    it('Should make basic authentication', () => {
       cy.getBaseUrl('/');
       cy.getByClass('card-title').eq(13)
         .should('be.visible')
