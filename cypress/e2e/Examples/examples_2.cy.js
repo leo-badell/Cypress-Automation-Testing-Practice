@@ -1,5 +1,5 @@
 import spok from 'cy-spok';
-import { faker } from '@faker-js/faker';
+  import { faker } from '@faker-js/faker';
 
 describe('Second spec', () => {
   beforeEach(() => {
@@ -34,12 +34,28 @@ describe('Second spec', () => {
       cy.getByClass('btn-bg').should('contain', 'Retrieve password').click();
     });
 
-    it('Should make basic authentication', () => {
+    it.only('Should make basic authentication', () => {
       cy.getBaseUrl('/');
       cy.getByClass('card-title').eq(13)
         .should('be.visible')
         .and('contain', 'Basic Authentication (user and pass: admin)')
         .click();
+
+        cy.window().then(win => {
+          // Stub the prompt to return the username and password
+          cy.stub(win, 'prompt').callsFake((message) => {
+            if (message === 'Nome de usuário') return 'myUsername';
+            if (message === 'Senha') return 'myPassword';
+            return null;
+          });
+      
+          // Click the button to trigger the prompt
+          cy.get('#prompt-button').click();
+      
+          // Verify the prompt interaction
+          cy.get('#prompt-answer').contains('myUsername');
+          cy.get('#prompt-answer').contains('myPassword');
+        });
     });
   });
 });

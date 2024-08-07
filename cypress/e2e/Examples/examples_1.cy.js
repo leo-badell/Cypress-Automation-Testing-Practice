@@ -1,4 +1,5 @@
 import spok from 'cy-spok';
+import { faker } from '@faker-js/faker';
 
 describe('First spec', () => {
   beforeEach(() => {
@@ -25,9 +26,15 @@ describe('First spec', () => {
         .and('contain', 'Web inputs')
         .click();
 
-      cy.getById('input-number').type('951');
-      cy.getById('input-text').type('Another test');
-      cy.getById('input-password').type('Cypress/e2e');
+      const display = {
+        number: faker.string.numeric(),
+        text: faker.word.words(),
+        password: faker.internet.password()
+      };
+
+      cy.getById('input-number').type(display.number);
+      cy.getById('input-text').type(display.text);
+      cy.getById('input-password').type(display.password);
 
       let date = new Date();
       date.setDate(date.getDate() + 400);
@@ -182,8 +189,12 @@ describe('First spec', () => {
         .and('contain', 'Form Validation')
         .click();
 
-      cy.getById('validationCustom01').should('be.visible').clear().type('John Connor');
-      cy.getById('validationCustom05').should('be.visible').type('212-3378954');
+      const form = {
+        contact: faker.person.firstName(),
+        number: faker.helpers.replaceSymbolWithNumber('###-#######')
+      }
+      cy.getById('validationCustom01').should('be.visible').clear().type(form.contact);
+      cy.getById('validationCustom05').should('be.visible').type(form.number);
 
       let date = new Date();
       date.setDate(date.getDate() + 180);
