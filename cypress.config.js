@@ -1,6 +1,7 @@
 const { defineConfig } = require('cypress');
 
 module.exports = {
+  video: true,
   e2e: {
     env:{
       baseUrl: 'https://practice.expandtesting.com',
