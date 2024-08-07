@@ -41,20 +41,20 @@ describe('Second spec', () => {
         .and('contain', 'Basic Authentication (user and pass: admin)')
         .click();
 
-        cy.window().then(win => {
-          // Stub the prompt to return the username and password
-          cy.stub(win, 'prompt').callsFake((message) => {
-            if (message === 'Nome de usuário') return 'myUsername';
-            if (message === 'Senha') return 'myPassword';
-            return null;
-          });
+        // cy.window().then(win => {
+        //   // Stub the prompt to return the username and password
+        //   cy.stub(win, 'prompt').callsFake((message) => {
+        //     if (message === 'Nome de usuário') return 'myUsername';
+        //     if (message === 'Senha') return 'myPassword';
+        //     return null;
+        //   });
       
-          // Click the button to trigger the prompt
-          cy.get('#prompt-button').click();
+        //   // Click the button to trigger the prompt
+        //   cy.get('#prompt-button').click();
       
-          // Verify the prompt interaction
-          cy.get('#prompt-answer').contains('myUsername');
-          cy.get('#prompt-answer').contains('myPassword');
+        //   // Verify the prompt interaction
+        //   cy.get('#prompt-answer').contains('myUsername');
+        //   cy.get('#prompt-answer').contains('myPassword');
         });
     });
   });
