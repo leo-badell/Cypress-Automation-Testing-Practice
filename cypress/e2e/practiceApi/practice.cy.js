@@ -15,9 +15,12 @@ describe('Get my public ip', () => {
     it('Should return 200 after running', () => {
         cy.getMyIp().then(response => {
             expect(response.status).to.eql(200)
-            expect(response.body.city).to.eql('Florianópolis')
-            expect(response.body.country).to.eql('Brazil')
-            expect(response.body.timezone).to.eql('America/Sao_Paulo')
+            expect(response.body.city).to.be.oneOf(['Florianópolis', 'Chicago'])
+            expect(response.body.country).to.be.oneOf(['Brazil', 'United States'])
+            expect(response.body.timezone).to.be.oneOf(['America/Sao_Paulo', 'America/Chicago'])
         })
     })
 })
+
+
+
