@@ -17,7 +17,7 @@ describe('Get my public ip', () => {
             expect(response.status).to.eql(200)
             expect(response.body.city).to.be.oneOf(['Florianópolis', 'Chicago', 'Boydton', 'San Francisco'])
             expect(response.body.country).to.be.oneOf(['Brazil', 'United States'])
-            expect(response.body.timezone).to.be.oneOf(['America/Sao_Paulo', 'America/Chicago', 'America/NewYork', 'America/Los_Angeles'])
+            expect(response.body.timezone).to.be.oneOf(['America/Sao_Paulo', 'America/Chicago', 'America/New_York', 'America/Los_Angeles'])
         })
     })
 })
