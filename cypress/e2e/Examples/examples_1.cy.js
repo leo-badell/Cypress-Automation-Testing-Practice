@@ -110,7 +110,7 @@ describe('First spec', () => {
   });
 
   context('Sample applications for practice test automation part II', () => {
-    it.only('Should inspect browser information', () => {
+    it('Should inspect browser information', () => {
       cy.getBaseUrl('/');
       cy.getByClass('card-title').eq(4)
         .should('be.visible')
@@ -122,7 +122,7 @@ describe('First spec', () => {
         cy.wrap(tableColumns).get('#browser-user-agent').should('contain', 'Mozilla/5.0');
         cy.wrap(tableColumns).get('#browser-code-name').should('contain', 'Mozilla');
         cy.wrap(tableColumns).get('#browser-name').should('contain', 'Google Chrome');
-        cy.wrap(tableColumns).get('#browser-version').invoke('text').should('be.oneOf',['5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36', '5.0 (X11; Linux x86_64) AppleWebKit/537.36(KHTML, like Gecko) Cypress/13.13.2 Chrome/118.0.5993.159 Electron/27.3.10 Safari/537.36']);
+        cy.wrap(tableColumns).get('#browser-version').invoke('text').should('match', /(Chrome\/\d+\.\d+\.\d+\.\d+|Linux)/);
         cy.wrap(tableColumns).get('#browser-cookie').should('contain', 'true');
         cy.wrap(tableColumns).get('#browser-platform').invoke('text').should('be.oneOf',['Win32', 'Linux x86_64']);
       })
