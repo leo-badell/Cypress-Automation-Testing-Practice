@@ -1,5 +1,5 @@
 import spok from 'cy-spok';
-  import { faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 
 describe('Second spec', () => {
   beforeEach(() => {
