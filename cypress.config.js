@@ -5,6 +5,7 @@ module.exports = {
   e2e: {
     env:{
       baseUrl: 'https://practice.expandtesting.com',
+      baseApi: 'https://practice.expandtesting.com/notes/api/api-docs/#/'
     },
     setupNodeEvents(on, config) {
       // Intercept ad requests globally
